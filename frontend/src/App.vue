@@ -1,6 +1,26 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import { ref } from 'vue'
+
+const check = ref("not yet");
+
+async function checkHealth() {
+  try {
+    const response = await fetch('/spring/api/health');
+    if (!response.ok) {
+      throw new Error(`レスポンスステータス: ${response.status}`);
+    }
+
+    const json = await response.json();
+    console.log(json);
+
+    check.value = "ok!";
+
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
@@ -14,6 +34,8 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
+      <button @click="checkHealth()">push api check</button>
+      <p>{{ check }}</p>
     </div>
   </header>
 
